@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Oct 24 21:56:58 2019
-
-@author: DELL
-"""
 
 import os 
 import pyKilosort3
@@ -13,7 +8,6 @@ results1 = []
 results2 = []
 sessions = []
 
-# os.chdir('/OceanStor100D/home/lichengyu_lab/lipy/neuropixel/VDPAP/')
 homedir = '/OceanStor100D/home/lichengyu_lab/lipy/neuropixel/sorting/'
 todoList = []
 for root, dirs, files in os.walk(homedir):
