@@ -1,0 +1,30 @@
+addpath('/OceanStor100D/home/lichengyu_lab/lipy/neuropixel/code/jpsth/')
+homedir=ephys.util.getHomedir('dtype',opt.type);
+meta_str=ephys.util.load_meta('type',opt.type,'criteria',opt.criteria,'delay',opt.delay);
+reg_tree=meta_str.reg_tree;
+load(fullfile(homedir,'..','track_meta','sucoords.mat'));
+reg_coord_map=containers.Map('KeyType','char','ValueType','any');
+idmap=load(fullfile('/OceanStor100D/home/lichengyu_lab/lipy/neuropixel/code','align','reg_ccfid_map.mat'));
+csvcell={'Id','Label','AP','DV','ML','depth','L1','L2','L3','L4','L5','L6'};
+for dep=1:6
+    ureg=unique(reg_tree(dep,:));
+    ureg=ureg(~cellfun('isempty',ureg));
+    for i=1:numel(ureg)
+        rsel=strcmp(reg_tree(dep,:),ureg{i});
+        tree=cell(1,6);
+        branch=idmap.reg2tree(ureg{i});
+        branch=branch(3:end);
+        tree(1:size(branch,2))=branch;
+        coordmm=nanmean(coord(rsel,:),1);
+        reg_coord_map(ureg{i})=coordmm;
+        csvcell(end+1,:)=[{char(ureg{i}),...
+            char(ureg{i}),...
+            coordmm(1),...
+            1000-coordmm(2),...
+            coordmm(3),...
+            dep},...
+            tree];
+    end
+end
+save(fullfile('homedir','..','track_meta','reg2coord.mat'),'reg_coord_map');
+writecell(csvcell,fullfile('homedir','..','track_meta','reg2coord.csv'));
